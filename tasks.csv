@@ -1,0 +1,7 @@
+id,type,name,status,description,epic
+1,TASK,Task,NEW,opisanie,
+2,EPIC,epic task,IN_PROGRESS,opisanie,
+3,SUBTASK,pod1,DONE,op,2
+4,SUBTASK,subtask,IN_PROGRESS,op,2
+
+2,3,4,1
