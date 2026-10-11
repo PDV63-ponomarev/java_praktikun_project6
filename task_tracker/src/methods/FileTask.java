@@ -46,11 +46,11 @@ public class FileTask {
         String epicField   = f[5].trim();
 
         switch (type) {
-            case TaskType.TASK:
+            case TASK:
                 return new Task(name, description, status, id, type);
-            case TaskType.EPIC:
+            case EPIC:
                 return new TaskEpic(name, description, status, id, type);
-            case TaskType.SUBTASK:
+            case SUBTASK:
                 int epicId = Integer.parseInt(epicField);
                 TaskEpic epic = createTask.getEpics().get(epicId);
                 String epicName = (epic != null) ? epic.getTaskName() : "";
