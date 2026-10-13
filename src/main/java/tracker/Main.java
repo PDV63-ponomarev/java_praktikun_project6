@@ -1,4 +1,6 @@
-package tracker.model.manager;
+package tracker;
+
+import tracker.manager.FileBackedTasksManager;
 
 import java.io.File;
 

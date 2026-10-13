@@ -23,9 +23,13 @@ public class Task {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskStatus = status;
-        this.taskID = taskID;
+//        this.taskID = taskID;
         this.taskType = taskType;
 
+    }
+
+    public void setTaskID(int taskID) {   // новый сеттер — только для менеджера
+        this.taskID = taskID;
     }
 
     public String getTaskName() {

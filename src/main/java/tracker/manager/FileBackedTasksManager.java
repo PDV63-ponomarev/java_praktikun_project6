@@ -1,4 +1,4 @@
-package tracker.model.manager;
+package tracker.manager;
 
 import tracker.model.*;
 

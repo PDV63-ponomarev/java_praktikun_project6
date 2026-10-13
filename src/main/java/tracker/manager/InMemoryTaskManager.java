@@ -1,12 +1,71 @@
-package tracker.model.manager;
+package tracker.manager;
 
 import tracker.model.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
 public class InMemoryTaskManager implements TaskManager {
 
+    protected final HashMap<Integer, Task> tasks = new HashMap<>();
+    protected final HashMap<Integer, TaskEpic> epics = new HashMap<>();
+    protected final HashMap<Integer, TaskSubtask> subtasks = new HashMap<>();
+    protected int nextId = 1;
+    protected final HistoryManager historyManager = Managers.getDefaultHistoryManager();
+
+    @Override
+    public int addNewTask(Task task) {
+        task.setTaskID(nextId++);
+        tasks.put(task.getTaskID(), task);
+        return task.getTaskID();
+    }
+
+    @Override
+    public int addNewSubtask(TaskSubtask subtask) {
+        TaskEpic epic = epics.get(subtask.getEpicId());
+        if (epic == null) {
+            return -1;   // или бросайте исключение — но тест из README ждёт, что эпик проверяется
+        }
+        subtask.setTaskID(nextId++);
+        subtasks.put(subtask.getTaskID(), subtask);
+        epic.addSubtaskId(subtask.getTaskID());
+        updateEpicStatus(epic.getTaskID());
+        return subtask.getTaskID();
+    }
+
+    @Override
+    public void deleteSubtask(int id) {
+        TaskSubtask subtask = subtasks.remove(id);
+        if (subtask == null) return;
+        TaskEpic epic = epics.get(subtask.getEpicId());
+        if (epic != null) {
+            epic.removeSubtaskId(id);
+            updateEpicStatus(epic.getTaskID());
+        }
+        historyManager.remove(id);
+    }
+
+    @Override
+    public void deleteEpic(int id) {
+        TaskEpic epic = epics.remove(id);
+        if (epic == null) return;
+        for (int subId : epic.getSubtaskIds()) {
+            subtasks.remove(subId);
+            historyManager.remove(subId);
+        }
+        historyManager.remove(id);
+    }
+
+    // вынесите в отдельный метод — он нужен и в updateSubtask
+    private void updateEpicStatus(int epicId) {
+        TaskEpic epic = epics.get(epicId);
+        epic.updateStatus(new ArrayList<>(subtasks.values()));
+    }
+
+
+    /*
     protected CreatTask creatTask;
     private ShowTask showTask;
     private DeleteTask deleteTask;
@@ -137,4 +196,7 @@ public class InMemoryTaskManager implements TaskManager {
         InMemoryTaskManager manager = new InMemoryTaskManager();
         manager.start();
     }
+
+    */
+
 }
