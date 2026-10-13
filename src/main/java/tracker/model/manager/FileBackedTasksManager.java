@@ -1,4 +1,6 @@
-import methods.*;
+package tracker.model.manager;
+
+import tracker.model.*;
 
 import java.io.File;
 import java.io.IOException;

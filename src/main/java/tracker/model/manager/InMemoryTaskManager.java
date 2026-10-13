@@ -1,4 +1,6 @@
-import methods.*;
+package tracker.model.manager;
+
+import tracker.model.*;
 
 import java.util.List;
 import java.util.Scanner;

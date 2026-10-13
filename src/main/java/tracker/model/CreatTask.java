@@ -1,4 +1,7 @@
-package methods;
+package tracker.model;
+
+import tracker.model.manager.HistoryManager;
+import tracker.model.manager.InMemoryHistoryManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;

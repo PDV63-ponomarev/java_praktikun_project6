@@ -1,5 +1,4 @@
-import methods.HistoryManager;
-import methods.InMemoryHistoryManager;
+package tracker.model.manager;
 
 public class Managers {
 

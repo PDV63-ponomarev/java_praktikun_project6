@@ -1,4 +1,6 @@
-package methods;
+package tracker.model.manager;
+
+import tracker.model.Task;
 
 import java.util.List;
 

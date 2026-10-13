@@ -1,4 +1,4 @@
-package methods;
+package tracker.model;
 
 import java.util.ArrayList;
 import java.util.List;

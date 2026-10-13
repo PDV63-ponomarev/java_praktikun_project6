@@ -1,3 +1,5 @@
+package tracker.model.manager;
+
 public interface TaskManager {
 
     void showAllTasks();
