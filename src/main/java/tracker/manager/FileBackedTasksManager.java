@@ -3,21 +3,75 @@ package tracker.manager;
 import tracker.model.*;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
-public class FileBackedTasksManager extends InMemoryTaskManager {
 
+import java.io.*;
+
+
+
+public class FileBackedTasksManager extends InMemoryTaskManager {
     private final File file;
 
-    public FileBackedTasksManager(File file) {
-        super();
-        this.file = file;
+    public FileBackedTasksManager(File file) { this.file = file; }
+
+    @Override
+    public int addNewTask(Task task) {
+        int id = super.addNewTask(task);
+        save();
+        return id;
     }
 
-public static FileBackedTasksManager loadFromFile(File file) {
+    @Override
+    public int addNewEpic(TaskEpic epic) {
+        int id = super.addNewEpic(epic);
+        save();
+        return id;
+    }
+
+    @Override
+    public int addNewSubtask(TaskSubtask subtask) {
+        int id = super.addNewSubtask(subtask);
+        save();
+        return id;
+    }
+
+    public static void writeFile(File file, CreatTask createTask) throws IOException {
+
+        try (Writer fileWriter = new FileWriter(file, false)) {
+
+            fileWriter.write("id,type,name,status,description,epic" + "\n");
+
+            for (Task task : createTask.getAllTasks()) {
+                fileWriter.write(writeTask(task) + "\n");
+            }
+
+            fileWriter.write("\n");
+
+            fileWriter.write(historyToString(createTask.getHistoryManager()));
+        }
+    }
+
+    private void save() {
+        try (Writer fileWriter = new FileWriter(file, false)) {
+
+        fileWriter.write("id,type,name,status,description,epic" + "\n");
+
+        for (Task task : createTask.getAllTasks()) {
+            fileWriter.write(writeTask(task) + "\n");
+        }
+
+        fileWriter.write("\n");
+
+        fileWriter.write(historyToString(createTask.getHistoryManager()));
+    }}
+
+    public static FileBackedTasksManager loadFromFile(File file) {
     FileBackedTasksManager manager = new FileBackedTasksManager(file);
 
     if (!file.exists() || file.length() == 0) {
