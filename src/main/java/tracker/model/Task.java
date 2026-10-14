@@ -19,13 +19,11 @@ public class Task {
     protected  int taskID;
     protected TaskType taskType;
 
-    public Task(String taskName, String taskDescription, EnumStatus status, int taskID, TaskType taskType) {
+    public Task(String taskName, String taskDescription, EnumStatus status, TaskType taskType) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskStatus = status;
-//        this.taskID = taskID;
         this.taskType = taskType;
-
     }
 
     public void setTaskID(int taskID) {   // новый сеттер — только для менеджера
@@ -48,7 +46,9 @@ public class Task {
         return taskID;
     }
 
-
+    public TaskType getTaskType() {
+        return taskType;
+    }
 
     public void setTaskName(String taskName) {
         this.taskName = taskName;

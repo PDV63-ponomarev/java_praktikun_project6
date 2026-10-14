@@ -3,24 +3,6 @@ package tracker.manager;
 import tracker.model.*;
 import java.util.List;
 
-
-/*
-public interface TaskManager {
-
-    void showAllTasks();
-    void deleteAllTasks();
-    void showTaskFromID();
-    void creatingNewTask();
-    void managerUpdateTask();
-    void deleteOneTask();
-    void showHistory();
-    void exit();
-
-}
-*/
-
-
-
 public interface TaskManager {
     // получение списков
     List<Task> getTasks();

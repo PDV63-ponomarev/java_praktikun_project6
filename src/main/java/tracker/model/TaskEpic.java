@@ -6,8 +6,8 @@ import java.util.List;
 public class TaskEpic extends Task{
     private List<Integer> subtaskIds;
 
-    public TaskEpic(String taskName, String taskDescription, EnumStatus status, int taskID, TaskType taskType) {
-        super(taskName, taskDescription, status, taskID, taskType);
+    public TaskEpic(String taskName, String taskDescription, EnumStatus status, TaskType taskType) {
+        super(taskName, taskDescription, status, taskType);
         this.subtaskIds = new ArrayList<>();
     }
 
