@@ -1,15 +1,5 @@
 package tracker.model;
 
-enum EnumStatus{
-    NEW,
-    IN_PROGRESS,
-    DONE
-}
-
-enum TaskType{
-    TASK,
-    EPIC,
-    SUBTASK }
 
 
 public class Task {
@@ -18,6 +8,7 @@ public class Task {
     protected  EnumStatus taskStatus;
     protected  int taskID;
     protected TaskType taskType;
+
 
     public Task(String taskName, String taskDescription, EnumStatus status, TaskType taskType) {
         this.taskName = taskName;

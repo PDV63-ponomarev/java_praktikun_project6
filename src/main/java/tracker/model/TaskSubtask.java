@@ -3,7 +3,7 @@ package tracker.model;
 public class TaskSubtask extends Task{
     private int epicId;
 
-    public TaskSubtask(String taskName, String taskDescription, EnumStatus status, int taskID,
+    public TaskSubtask(String taskName, String taskDescription, EnumStatus status,
                        int epicId, TaskType taskType) {
         super(taskName, taskDescription, status, taskType);
         this.epicId = epicId;

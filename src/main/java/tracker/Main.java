@@ -88,7 +88,7 @@ public class Main {
                 System.out.print("ID эпика: ");
                 int epicId = Integer.parseInt(scanner.nextLine().trim());
                 int id = manager.addNewSubtask(
-                        new TaskSubtask(name, desc, status, epicId, TaskType.SUBTASK));
+                        new TaskSubtask(name, desc, status, epicId ,TaskType.SUBTASK));
                 System.out.println(id == -1 ? "Эпик не найден" : "Создана подзадача, ID: " + id);
             }
         }
