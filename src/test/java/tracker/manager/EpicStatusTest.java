@@ -1,6 +1,5 @@
 package tracker.manager;
 import tracker.model.*;
-import tracker.manager.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -8,8 +7,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tracker.model.EnumStatus.*;
-import static tracker.model.TaskType.EPIC;
-import static tracker.model.TaskType.SUBTASK;
+import static tracker.model.TaskType.*;
+
 
 
 public class EpicStatusTest {
