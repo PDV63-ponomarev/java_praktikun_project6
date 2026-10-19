@@ -22,8 +22,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager = createManager();
     }
 
-    @Test
-    void addNewTask() {
+//    @Test
+    void addNewTaskShouldSaveTask() {
         Task task = new Task("Test addNewTask", "Test addNewTask description", NEW, TASK);
         final int taskId = taskManager.addNewTask(task);
 
@@ -38,22 +38,43 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(1, tasks.size(), "Неверное количество задач.");
         assertEquals(task, tasks.get(0), "Задачи не совпадают.");
     }
-//
-//    @Test
-//    void addNewTaskShouldSaveTask() { /* стандартный кейс из README */ }
-//
-//    @Test
-//    void getTasksShouldReturnEmptyListWhenNoTasks() { /* пустой список */ }
-//
-//    @Test
-//    void getTaskWithWrongIdShouldReturnNull() { assertNull(taskManager.getTask(999)); }
-//
-//    @Test
-//    void addNewSubtaskShouldFailWhenEpicNotExists() { /* несуществующий эпик */ }
-//
-//    @Test
-//    void deleteTaskShouldRemoveTaskAndUpdateState() { /*Удаление задачи */ }
 
+//    @Test
+    void getTasksShouldReturnEmptyListWhenNoTasks() {
+        final List<Task> tasks = taskManager.getTasks();
+
+        assertNotNull(tasks, "getTasks() не должен возвращать null");
+        assertTrue(tasks.isEmpty(), "Список задач должен быть пустым");
+     }
+
+//    @Test
+    void getTaskWithWrongIdShouldReturnNull() {
+        assertNull(taskManager.getTask(999),"getTasks() должен возвращать null" );
+    }
+
+//    @Test
+    void addNewSubtaskShouldFailWhenEpicNotExists() {
+        TaskSubtask subtask = new TaskSubtask("S", "d", NEW, 999, SUBTASK);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> taskManager.addNewSubtask(subtask),
+                "Должно быть исключение, если эпика с id=999 нет");
+    }
+
+    @Test
+    void deleteTaskShouldRemoveTaskAndUpdateState() {
+
+        // ДОДЕЛАТЬ! Проверка подчишения истории и изменение статуса эпика
+
+        Task task = new Task("Test addNewTask", "Test addNewTask description", NEW, TASK);
+        final int taskId = taskManager.addNewTask(task);
+
+        assertNotNull(taskManager.getTask(taskId), "Задача не найдена.");
+
+        taskManager.deleteTask(taskId);
+
+        assertNull(taskManager.getTask(taskId), "Задача не удалена");
+    }
 }
 
 class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {

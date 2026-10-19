@@ -60,16 +60,17 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int addNewSubtask(TaskSubtask subtask) {
         TaskEpic epic = epics.get(subtask.getEpicId());
-        if (epic == null) return -1;
+        if (epic == null) {
+            throw new IllegalArgumentException(
+                    "Эпик с id=" + subtask.getEpicId() + " не найден");
+//            return -1;
+        }
         subtask.setTaskID(nextId++);
         subtasks.put(subtask.getTaskID(), subtask);
         epic.addSubtaskId(subtask.getTaskID());
         updateEpicStatus(epic.getTaskID());
         return subtask.getTaskID();
     }
-
-
-
 
     @Override
     public void updateTask(Task task) {
