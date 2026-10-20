@@ -51,8 +51,18 @@ public class Main {
     }
 
     private static void openTaskById() {
-        System.out.print("Введите ID: ");
-        int id = Integer.parseInt(scanner.nextLine().trim());
+        int id;
+        while (true) {
+            System.out.print("Введите ID: ");
+            String input = scanner.nextLine().trim();
+            try {
+                id = Integer.parseInt(input);
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Неверный формат ID. Попробуйте снова.");
+            }
+        }
+
         Task task = manager.getTask(id);
         if (task == null) task = manager.getEpic(id);
         if (task == null) task = manager.getSubtask(id);
@@ -60,8 +70,16 @@ public class Main {
     }
 
     private static void createNewTask() {
-        System.out.println("Тип: 1 - обычная, 2 - эпик, 3 - подзадача");
-        String type = scanner.nextLine().trim();
+        String type;
+        while (true) {
+            System.out.println("Тип: 1 - обычная, 2 - эпик, 3 - подзадача");
+            type = scanner.nextLine().trim();
+            if (type.equals("1") || type.equals("2") || type.equals("3")) {
+                break;
+            }
+            System.out.println("Неверный тип. Введите 1, 2 или 3.");
+        }
+
         if (type.equals("3") && manager.getEpics().isEmpty()) {
             System.out.println("Нет эпиков — сначала создайте эпик.");
             return;

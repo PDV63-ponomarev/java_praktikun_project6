@@ -22,7 +22,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager = createManager();
     }
 
-//    @Test
+    @Test
     void addNewTaskShouldSaveTask() {
         Task task = new Task("Test addNewTask", "Test addNewTask description", NEW, TASK);
         final int taskId = taskManager.addNewTask(task);
@@ -39,7 +39,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(task, tasks.get(0), "Задачи не совпадают.");
     }
 
-//    @Test
+    @Test
     void getTasksShouldReturnEmptyListWhenNoTasks() {
         final List<Task> tasks = taskManager.getTasks();
 
@@ -47,12 +47,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertTrue(tasks.isEmpty(), "Список задач должен быть пустым");
      }
 
-//    @Test
+   @Test
     void getTaskWithWrongIdShouldReturnNull() {
         assertNull(taskManager.getTask(999),"getTasks() должен возвращать null" );
     }
 
-//    @Test
+   @Test
     void addNewSubtaskShouldFailWhenEpicNotExists() {
         TaskSubtask subtask = new TaskSubtask("S", "d", NEW, 999, SUBTASK);
 
@@ -64,16 +64,23 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void deleteTaskShouldRemoveTaskAndUpdateState() {
 
-        // ДОДЕЛАТЬ! Проверка подчишения истории и изменение статуса эпика
+        TaskEpic epic = new TaskEpic("E", "d", DONE, EPIC);
+        final int epicId = taskManager.addNewEpic(epic);
+        TaskSubtask subtask = new TaskSubtask("S", "d", IN_PROGRESS, epic.getTaskID(), SUBTASK);
+        final int subtaskId  = taskManager.addNewSubtask(subtask);
 
-        Task task = new Task("Test addNewTask", "Test addNewTask description", NEW, TASK);
-        final int taskId = taskManager.addNewTask(task);
+        assertTrue(taskManager.getEpic(epicId).getSubtaskIds().contains(subtaskId),
+                "Подзадача должна быть в эпике до удаления");
+        assertEquals(IN_PROGRESS, taskManager.getEpic(epicId).getTaskStatus(),
+                "Эпик с IN_PROGRESS-подзадачей должен быть IN_PROGRESS");
 
-        assertNotNull(taskManager.getTask(taskId), "Задача не найдена.");
+        taskManager.deleteSubtask(subtaskId);
 
-        taskManager.deleteTask(taskId);
-
-        assertNull(taskManager.getTask(taskId), "Задача не удалена");
+        assertNull(taskManager.getSubtask(subtaskId), "Задача не удалена");
+        assertTrue(taskManager.getEpic(epicId).getSubtaskIds().isEmpty(),
+                "Эпик не должен содержать удалённую подзадачу");
+        assertEquals(NEW, taskManager.getEpic(epicId).getTaskStatus(),
+                "Эпик без подзадач должен быть NEW");
     }
 }
 
