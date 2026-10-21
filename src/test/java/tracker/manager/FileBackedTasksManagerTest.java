@@ -1,20 +1,33 @@
 package tracker.manager;
-/*
-public class FileBackedTasksManagerTest {
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import tracker.model.*;
 
-    @TempDir                        // JUnit 5 создаёт временную папку, удалит после теста
-    Path tempDir;
+import java.io.File;
+import java.nio.file.Path;
 
-    @Test
-    void savedAndLoadedStateShouldMatch() {
-        Path file = tempDir.resolve("tasks.csv");
-        FileBackedTasksManager manager = new FileBackedTasksManager(file);
-        // создали эпик + подзадачу + обычную задачу, просмотрели пару задач (история)
-        FileBackedTasksManager loaded = FileBackedTasksManager.loadFromFile(file);
-        assertEquals(manager.getTasks(), loaded.getTasks());
-        assertEquals(manager.getEpics(), loaded.getEpics());
-        assertEquals(manager.getHistory(), loaded.getHistory());
-    }
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tracker.model.EnumStatus.NEW;
+import static tracker.model.TaskType.EPIC;
+import static tracker.model.TaskType.TASK;
 
-}
- */
+//public class FileBackedTasksManagerTest {
+//
+//    @Test
+//    void savedAndLoadedStateShouldMatch() {
+//        File file = new File("tasks.csv");
+//        FileBackedTasksManager manager = new FileBackedTasksManager(file);
+//
+//
+//        Task task = new Task("T1", "d", NEW, TASK);
+//        TaskEpic epic = new TaskEpic("E", "d", NEW,  EPIC);
+//
+//        // создали эпик + подзадачу + обычную задачу, просмотрели пару задач (история)
+//        FileBackedTasksManager loaded = FileBackedTasksManager.loadFromFile(file);
+//
+//        assertEquals(manager.getTasks(), loaded.getTasks());
+//        assertEquals(manager.getEpics(), loaded.getEpics());
+//        assertEquals(manager.getHistory(), loaded.getHistory());
+//    }
+//
+//}

@@ -59,7 +59,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     @Override
     public void deleteSubtasks()  { super.deleteSubtasks();  save(); }
 
-    private void save() {
+    void save() {
         try (Writer w = new FileWriter(file, StandardCharsets.UTF_8)) {
             w.write("id,type,name,status,description,epic\n");
             for (Task t : getTasks())         w.write(FileTask.toString(t) + "\n");

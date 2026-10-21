@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -96,5 +97,42 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     FileBackedTasksManager createManager() {
         return new FileBackedTasksManager(new File("test.csv"));
     }
+
+    @Test
+    void saveAndLoadedEmptyTask() throws IOException {
+        File file = File.createTempFile("test", ".csv");
+        file.deleteOnExit();
+
+        FileBackedTasksManager manager = new FileBackedTasksManager(file);
+        manager.save();
+
+        FileBackedTasksManager loaded = FileBackedTasksManager.loadFromFile(file);
+
+        assertTrue(loaded.getTasks().isEmpty(),"Список задач должен быть пустым");
+        assertTrue(loaded.getEpics().isEmpty(), "Список эпиков должен быть пустым");
+        assertTrue(loaded.getSubtasks().isEmpty(), "Список подзадач должен быть пустым");
+        assertTrue(loaded.getHistory().isEmpty(), "История должна быть пустой");
+
+    }
+
+    @Test
+    void saveAndLoadedEpicWithoutSubtask() throws IOException {
+        File file = File.createTempFile("test", ".csv");
+        file.deleteOnExit();
+
+        TaskEpic epic = new TaskEpic("E", "d", NEW,  EPIC);
+        FileBackedTasksManager manager = new FileBackedTasksManager(file);
+        manager.addNewEpic(epic);
+        manager.save();
+
+        FileBackedTasksManager loaded = FileBackedTasksManager.loadFromFile(file);
+
+        assertEquals(epic, loaded.getEpics().get(0), "Эпик в менеджере не равен эпику в файле");
+        assertTrue(loaded.getTasks().isEmpty(),"Список задач должен быть пустым");
+        assertTrue(loaded.getSubtasks().isEmpty(), "Список подзадач должен быть пустым");
+        assertTrue(loaded.getHistory().isEmpty(), "История должна быть пустой");
+    }
+
+
 }
 

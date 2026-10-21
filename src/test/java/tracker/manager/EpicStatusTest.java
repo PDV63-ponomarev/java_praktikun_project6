@@ -24,19 +24,16 @@ public class EpicStatusTest {
         assertEquals(NEW, epic.getTaskStatus(), "Статус эпика должен быть New");
     }
 
-
     @Test
     void epicWithAllNewSubtasksShouldBeNew() {
         TaskEpic epic = new TaskEpic("E", "d", NEW,  EPIC);
         TaskSubtask subtask = new TaskSubtask("S", "d", NEW, epic.getTaskID(), SUBTASK);
-
 
         epic.addSubtaskId(subtask.getTaskID());
         epic.updateStatus(List.of(subtask));
 
         assertEquals(NEW, epic.getTaskStatus(), "Статус эпика должен быть New");
     }
-
 
     @Test
     void epicWithAllDoneSubtasksShouldBeDone() {
