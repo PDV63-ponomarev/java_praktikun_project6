@@ -95,7 +95,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void updateEpicStatus(int epicId) {
         TaskEpic epic = epics.get(epicId);
-        epic.updateStatus(new ArrayList<>(subtasks.values()));
+        epic.recalculate(new ArrayList<>(subtasks.values()));
     }
 
     @Override

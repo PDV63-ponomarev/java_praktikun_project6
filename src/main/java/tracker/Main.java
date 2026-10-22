@@ -5,6 +5,9 @@ import tracker.manager.TaskManager;
 import tracker.model.*;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Main {
@@ -45,9 +48,13 @@ public class Main {
     }
 
     private static void printAllTasks() {
-        for (Task t : manager.getTasks())     System.out.println(t);
-        for (TaskEpic e : manager.getEpics()) System.out.println(e);
-        for (TaskSubtask s : manager.getSubtasks()) System.out.println(s);
+        if (manager.getTasks().isEmpty() && manager.getEpics().isEmpty() && manager.getSubtasks().isEmpty()){
+            System.out.println("Список задач пуст");
+        } else {
+            for (Task t : manager.getTasks())     System.out.println(t);
+            for (TaskEpic e : manager.getEpics()) System.out.println(e);
+            for (TaskSubtask s : manager.getSubtasks()) System.out.println(s);
+        }
     }
 
     private static void openTaskById() {
@@ -89,14 +96,16 @@ public class Main {
         System.out.print("Описание: ");
         String desc = scanner.nextLine().trim();
         EnumStatus status = readStatus();
+        int duration = readDuration();
+        Date startTime = readStartTime();
 
         switch (type) {
             case "1" -> {
-                int id = manager.addNewTask(new Task(name, desc, status, TaskType.TASK));
+                int id = manager.addNewTask(new Task(name, desc, status, TaskType.TASK, duration, startTime));
                 System.out.println("Создана задача, ID: " + id);
             }
             case "2" -> {
-                int id = manager.addNewEpic(new TaskEpic(name, desc, status, TaskType.EPIC));
+                int id = manager.addNewEpic(new TaskEpic(name, desc, status, TaskType.EPIC, duration, startTime));
                 System.out.println("Создан эпик, ID: " + id);
             }
             case "3" -> {
@@ -106,7 +115,7 @@ public class Main {
                 System.out.print("ID эпика: ");
                 int epicId = Integer.parseInt(scanner.nextLine().trim());
                 int id = manager.addNewSubtask(
-                        new TaskSubtask(name, desc, status, epicId ,TaskType.SUBTASK));
+                        new TaskSubtask(name, desc, status, epicId ,TaskType.SUBTASK, duration, startTime));
                 System.out.println(id == -1 ? "Эпик не найден" : "Создана подзадача, ID: " + id);
             }
         }
@@ -114,46 +123,70 @@ public class Main {
 
     private static void updateTaskDialog() {
         System.out.print("ID задачи для обновления: ");
-        int id = Integer.parseInt(scanner.nextLine().trim());
-        System.out.println("1 - Имя, 2 - Описание, 3 - Статус (не для эпика)");
+        int id;
+        try {
+            id = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Неверный ID.");
+            return;
+        }
+
+        System.out.println("1 - Имя, 2 - Описание, 3 - Статус, 4 - Продолжительность, 5 - Дата старта");
         String choice = scanner.nextLine().trim();
 
-        if (choice.equals("3")) {
-            TaskEpic epic = manager.getEpic(id);
-            if (epic != null) { System.out.println("Статус эпика меняется автоматически"); return; }
-            TaskSubtask sub = manager.getSubtask(id);
-            if (sub != null) {
-                sub.setTaskStatus(readStatus());
-                manager.updateSubtask(sub);
-            } else {
-                Task task = manager.getTask(id);
-                if (task != null) {
-                    task.setTaskStatus(readStatus());
-                    manager.updateTask(task);
-                } else System.out.println("Задача не найдена");
-            }
+        Task task = manager.getTask(id);
+        TaskEpic epic = manager.getEpic(id);
+        TaskSubtask sub = manager.getSubtask(id);
+
+        if (task == null && epic == null && sub == null) {
+            System.out.println("Задача не найдена");
             return;
         }
 
-        System.out.print("Новое значение: ");
-        String value = scanner.nextLine().trim();
-        Task task = manager.getTask(id);
-        if (task != null) {
-            if (choice.equals("1")) task.setTaskName(value); else task.setTaskDescription(value);
-            manager.updateTask(task);
-            return;
+        switch (choice) {
+            case "1" -> {
+                System.out.print("Новое имя: ");
+                String value = scanner.nextLine().trim();
+                if (task != null) { task.setTaskName(value); manager.updateTask(task); }
+                else if (epic != null) { epic.setTaskName(value); manager.updateEpic(epic); }
+                else { sub.setTaskName(value); manager.updateSubtask(sub); }
+            }
+            case "2" -> {
+                System.out.print("Новое описание: ");
+                String value = scanner.nextLine().trim();
+                if (task != null) { task.setTaskDescription(value); manager.updateTask(task); }
+                else if (epic != null) { epic.setTaskDescription(value); manager.updateEpic(epic); }
+                else { sub.setTaskDescription(value); manager.updateSubtask(sub); }
+            }
+            case "3" -> {
+                if (epic != null) {
+                    System.out.println("Статус эпика меняется автоматически");
+                    return;
+                }
+                EnumStatus status = readStatus();
+                if (task != null) { task.setTaskStatus(status); manager.updateTask(task); }
+                else { sub.setTaskStatus(status); manager.updateSubtask(sub); }
+            }
+            case "4" -> {
+                if (epic != null) {
+                    System.out.println("Продолжительность эпика рассчитывается из подзадач");
+                    return;
+                }
+                int duration = readDuration();
+                if (task != null) { task.setDuration(duration); manager.updateTask(task); }
+                else { sub.setDuration(duration); manager.updateSubtask(sub); }
+            }
+            case "5" -> {
+                if (epic != null) {
+                    System.out.println("Дата старта эпика рассчитывается из подзадач");
+                    return;
+                }
+                Date startTime = readStartTime();
+                if (task != null) { task.setStartTime(startTime); manager.updateTask(task); }
+                else { sub.setStartTime(startTime); manager.updateSubtask(sub); }
+            }
+            default -> System.out.println("Неверный пункт меню");
         }
-        TaskEpic epic = manager.getEpic(id);
-        if (epic != null) {
-            if (choice.equals("1")) epic.setTaskName(value); else epic.setTaskDescription(value);
-            manager.updateEpic(epic);
-            return;
-        }
-        TaskSubtask sub = manager.getSubtask(id);
-        if (sub != null) {
-            if (choice.equals("1")) sub.setTaskName(value); else sub.setTaskDescription(value);
-            manager.updateSubtask(sub);
-        } else System.out.println("Задача не найдена");
     }
 
     private static void deleteOneTask() {
@@ -188,6 +221,40 @@ public class Main {
                 case "2" -> { return EnumStatus.IN_PROGRESS; }
                 case "3" -> { return EnumStatus.DONE; }
                 default -> System.out.println("Введите 1, 2 или 3");
+            }
+        }
+    }
+
+    private static int readDuration() {
+        while (true) {
+            System.out.print("Продолжительность в минутах (0, если неизвестно): ");
+            String input = scanner.nextLine().trim();
+            try {
+                int d = Integer.parseInt(input);
+                if (d < 0) {
+                    System.out.println("Продолжительность не может быть отрицательной.");
+                    continue;
+                }
+                return d;
+            } catch (NumberFormatException e) {
+                System.out.println("Введите целое число.");
+            }
+        }
+    }
+
+    private static Date readStartTime() {
+        SimpleDateFormat fmt = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        fmt.setLenient(false);
+        while (true) {
+            System.out.print("Дата старта (dd.MM.yyyy HH:mm, пусто — без даты): ");
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                return null;
+            }
+            try {
+                return fmt.parse(input);
+            } catch (ParseException e) {
+                System.out.println("Неверный формат. Пример: 01.05.2024 10:30");
             }
         }
     }

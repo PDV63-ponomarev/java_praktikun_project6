@@ -1,6 +1,7 @@
 package tracker.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FileTask {
@@ -10,9 +11,21 @@ public class FileTask {
         if (task instanceof TaskSubtask sub) {
             epicId = String.valueOf(sub.getEpicId());
         }
-        return String.format("%d,%s,%s,%s,%s,%s",
-                task.getTaskID(), task.getTaskType(), task.getTaskName(),
-                task.getTaskStatus(), task.getTaskDescription(), epicId);
+
+        String startTimeStr = "";
+        if (task.getStartTime() != null) {
+            startTimeStr = String.valueOf(task.getStartTime().getTime()); // миллисекунды
+        }
+
+        return String.format("%d,%s,%s,%s,%s,%s,%d,%s",
+                task.getTaskID(),
+                task.getTaskType(),
+                task.getTaskName(),
+                task.getTaskStatus(),
+                task.getTaskDescription(),
+                epicId,
+                task.getDuration(),
+                startTimeStr);
     }
 
     public static Task fromString(String value) {
@@ -23,12 +36,19 @@ public class FileTask {
         EnumStatus status = EnumStatus.valueOf(f[3].trim());
         String description = f[4].trim();
         String epicField = f[5].trim();
+        int duration = Integer.parseInt(f[6].trim());
+
+        Date startTime = null;
+        String startTimeStr = f[7].trim();
+        if (!startTimeStr.isEmpty()) {
+            startTime = new Date(Long.parseLong(startTimeStr));
+        }
 
         Task task = switch (type) {
-            case TASK    -> new Task(name, description, status, type);
-            case EPIC    -> new TaskEpic(name, description, status, type);
+            case TASK    -> new Task(name, description, status, type, duration, startTime);
+            case EPIC    -> new TaskEpic(name, description, status, type, duration, startTime);
             case SUBTASK -> new TaskSubtask(name, description, status,
-                    Integer.parseInt(epicField), type);
+                    Integer.parseInt(epicField), type, duration, startTime);
         };
         task.setTaskID(id);   // id восстанавливаем из файла
         return task;

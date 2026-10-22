@@ -14,29 +14,35 @@ import static tracker.model.TaskType.*;
 public class EpicStatusTest {
     @Test
     void epicWithNoSubtasksShouldBeNew() {
-        TaskEpic epic = new TaskEpic("E", "d", NEW,  EPIC);
+        TaskEpic epic = new TaskEpic("E", "d", NEW, EPIC,
+                60, null);
 
-        epic.updateStatus(List.of());
+        epic.recalculate(List.of());
 
         assertEquals(NEW, epic.getTaskStatus(), "Статус эпика должен быть New");
     }
 
     @Test
     void epicWithAllNewSubtasksShouldBeNew() {
-        TaskEpic epic = new TaskEpic("E", "d", NEW,  EPIC);
-        TaskSubtask subtask = new TaskSubtask("S", "d", NEW, epic.getTaskID(), SUBTASK);
+        TaskEpic epic = new TaskEpic("E", "d", NEW, EPIC,
+                60, null);
+        TaskSubtask subtask = new TaskSubtask("S", "d", NEW, epic.getTaskID(), SUBTASK,
+                60, null);
 
         epic.addSubtaskId(subtask.getTaskID());
-        epic.updateStatus(List.of(subtask));
+        epic.recalculate(List.of(subtask));
 
         assertEquals(NEW, epic.getTaskStatus(), "Статус эпика должен быть New");
     }
 
     @Test
     void epicWithAllDoneSubtasksShouldBeDone() {
-        TaskEpic epic = new TaskEpic("E", "d", NEW,  EPIC);
-        TaskSubtask subtask1 = new TaskSubtask("S1", "d", DONE, epic.getTaskID(), SUBTASK);
-        TaskSubtask subtask2 = new TaskSubtask("S2", "d", DONE, epic.getTaskID(), SUBTASK);
+        TaskEpic epic = new TaskEpic("E", "d", NEW, EPIC,
+                60, null);
+        TaskSubtask subtask1 = new TaskSubtask("S1", "d", DONE, epic.getTaskID(), SUBTASK,
+                60, null);
+        TaskSubtask subtask2 = new TaskSubtask("S2", "d", DONE, epic.getTaskID(), SUBTASK,
+                60, null);
 
 
         subtask1.setTaskID(1);
@@ -45,37 +51,41 @@ public class EpicStatusTest {
         epic.addSubtaskId(subtask1.getTaskID());
         epic.addSubtaskId(subtask2.getTaskID());
 
-        epic.updateStatus(List.of(subtask1, subtask2));
+        epic.recalculate(List.of(subtask1, subtask2));
 
         assertEquals(DONE, epic.getTaskStatus(), "Статус эпика должен быть DONE");
     }
 
     @Test
     void epicWithNewAndDoneSubtasksShouldBeInProgress() {
-        TaskEpic epic = new TaskEpic("E", "d", NEW,  EPIC);
-        TaskSubtask subtask1 = new TaskSubtask("S1", "d", NEW, epic.getTaskID(), SUBTASK);
-        TaskSubtask subtask2 = new TaskSubtask("S2", "d", DONE, epic.getTaskID(), SUBTASK);
+        TaskEpic epic = new TaskEpic("E", "d", NEW, EPIC, 60, null);
+        TaskSubtask subtask1 = new TaskSubtask("S1", "d", NEW, epic.getTaskID(), SUBTASK,
+                60, null);
+        TaskSubtask subtask2 = new TaskSubtask("S2", "d", DONE, epic.getTaskID(), SUBTASK,
+                60, null);
 
         subtask1.setTaskID(1);
         subtask2.setTaskID(2);
         epic.addSubtaskId(subtask1.getTaskID());
         epic.addSubtaskId(subtask2.getTaskID());
-        epic.updateStatus(List.of(subtask1, subtask2));
+        epic.recalculate(List.of(subtask1, subtask2));
 
         assertEquals(IN_PROGRESS, epic.getTaskStatus(), "Статус эпика должен быть IN_PROGRESS");
     }
 
     @Test
     void epicWithInProgressSubtaskShouldBeInProgress() {
-        TaskEpic epic = new TaskEpic("E", "d", NEW,  EPIC);
-        TaskSubtask subtask1 = new TaskSubtask("S1", "d", IN_PROGRESS, epic.getTaskID(), SUBTASK);
-        TaskSubtask subtask2 = new TaskSubtask("S2", "d", IN_PROGRESS, epic.getTaskID(), SUBTASK);
+        TaskEpic epic = new TaskEpic("E", "d", NEW, EPIC, 60, null);
+        TaskSubtask subtask1 = new TaskSubtask("S1", "d", IN_PROGRESS, epic.getTaskID(), SUBTASK,
+                60, null);
+        TaskSubtask subtask2 = new TaskSubtask("S2", "d", IN_PROGRESS, epic.getTaskID(), SUBTASK,
+                60, null);
 
         subtask1.setTaskID(1);
         subtask2.setTaskID(2);
         epic.addSubtaskId(subtask1.getTaskID());
         epic.addSubtaskId(subtask2.getTaskID());
-        epic.updateStatus(List.of(subtask1, subtask2));
+        epic.recalculate(List.of(subtask1, subtask2));
 
         assertEquals(IN_PROGRESS, epic.getTaskStatus(), "Статус эпика должен быть IN_PROGRESS");
     }

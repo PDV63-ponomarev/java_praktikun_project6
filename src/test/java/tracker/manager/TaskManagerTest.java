@@ -25,7 +25,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void addNewTaskShouldSaveTask() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description", NEW, TASK);
+        Task task = new Task("Test addNewTask", "Test addNewTask description", NEW, TASK,
+                60, null);
         final int taskId = taskManager.addNewTask(task);
 
         final Task savedTask = taskManager.getTask(taskId);
@@ -55,7 +56,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
    @Test
     void addNewSubtaskShouldFailWhenEpicNotExists() {
-        TaskSubtask subtask = new TaskSubtask("S", "d", NEW, 999, SUBTASK);
+        TaskSubtask subtask = new TaskSubtask("S", "d", NEW, 999, SUBTASK,
+                60, null);
 
         assertThrows(IllegalArgumentException.class,
                 () -> taskManager.addNewSubtask(subtask),
@@ -65,9 +67,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void deleteTaskShouldRemoveTaskAndUpdateState() {
 
-        TaskEpic epic = new TaskEpic("E", "d", DONE, EPIC);
+        TaskEpic epic = new TaskEpic("E", "d", DONE, EPIC,
+                60, null);
         final int epicId = taskManager.addNewEpic(epic);
-        TaskSubtask subtask = new TaskSubtask("S", "d", IN_PROGRESS, epic.getTaskID(), SUBTASK);
+        TaskSubtask subtask = new TaskSubtask("S", "d", IN_PROGRESS, epic.getTaskID(), SUBTASK,
+                60, null);
         final int subtaskId  = taskManager.addNewSubtask(subtask);
 
         assertTrue(taskManager.getEpic(epicId).getSubtaskIds().contains(subtaskId),
@@ -120,7 +124,8 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         File file = File.createTempFile("test", ".csv");
         file.deleteOnExit();
 
-        TaskEpic epic = new TaskEpic("E", "d", NEW,  EPIC);
+        TaskEpic epic = new TaskEpic("E", "d", NEW,  EPIC,
+                60, null);
         FileBackedTasksManager manager = new FileBackedTasksManager(file);
         manager.addNewEpic(epic);
         manager.save();

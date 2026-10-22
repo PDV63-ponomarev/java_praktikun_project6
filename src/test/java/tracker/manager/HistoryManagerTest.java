@@ -21,9 +21,9 @@ public class HistoryManagerTest{
     @BeforeEach
     void setUp() {
         historyManager = new InMemoryHistoryManager(); // ← конкретная реализация
-        task1 = new Task("T1", "d", NEW, TASK);
-        task2 = new Task("T2", "d", NEW, TASK);
-        task3 = new Task("T3", "d", NEW, TASK);
+        task1 = new Task("T1", "d", NEW, TASK, 60, null);
+        task2 = new Task("T2", "d", NEW, TASK, 60, null);
+        task3 = new Task("T3", "d", NEW, TASK, 60, null);
         task1.setTaskID(1);   // id нужны, иначе дубли не отличить
         task2.setTaskID(2);
         task3.setTaskID(3);
