@@ -1,6 +1,7 @@
 package tracker.model;
 
 
+import java.util.Objects;
 
 public class Task {
     protected  String taskName;
@@ -53,7 +54,6 @@ public class Task {
         this.taskStatus = taskStatus;
     }
 
-
     @Override
     public String toString() {
         return String.format("Задача {Название: %s; Описание: %s; Статус: %s; ID: %d}",
@@ -61,5 +61,18 @@ public class Task {
                taskDescription,
                taskStatus,
                taskID);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return taskID == task.taskID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(taskID);
     }
 }
