@@ -18,6 +18,7 @@ public interface TaskManager {
     int addNewTask(Task task);
     int addNewEpic(TaskEpic epic);
     int addNewSubtask(TaskSubtask subtask);
+    List<Task> getPrioritizedTasks();
 
     // обновление
     void updateTask(Task task);

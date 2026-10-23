@@ -8,6 +8,7 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -48,13 +49,18 @@ public class Main {
     }
 
     private static void printAllTasks() {
-        if (manager.getTasks().isEmpty() && manager.getEpics().isEmpty() && manager.getSubtasks().isEmpty()){
-            System.out.println("Список задач пуст");
-        } else {
-            for (Task t : manager.getTasks())     System.out.println(t);
-            for (TaskEpic e : manager.getEpics()) System.out.println(e);
-            for (TaskSubtask s : manager.getSubtasks()) System.out.println(s);
+//        if (manager.getTasks().isEmpty() && manager.getEpics().isEmpty() && manager.getSubtasks().isEmpty()){
+//            System.out.println("Список задач пуст");
+//        } else {
+//            for (Task t : manager.getTasks())     System.out.println(t);
+//            for (TaskEpic e : manager.getEpics()) System.out.println(e);
+//            for (TaskSubtask s : manager.getSubtasks()) System.out.println(s);
+        List<Task> list = manager.getPrioritizedTasks();
+        if (list.isEmpty()) {
+            System.out.println("Список приоритетных задач пуст");
+            return;
         }
+        for (Task t : list) System.out.println(t);
     }
 
     private static void openTaskById() {

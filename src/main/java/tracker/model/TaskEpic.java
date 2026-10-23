@@ -96,7 +96,7 @@ public class TaskEpic extends Task{
         Date end = getEndTime();
         String endStr = (end == null) ? "не задано" : fmt.format(end);
 
-        return String.format("Задача {Название: %s; Описание: %s; Статус: %s; ID: %d; Подзадачи: %s" +
+        return String.format("Задача {Название: %s; Описание: %s; Статус: %s; ID: %d; Подзадачи: %s; " +
                         "Дата начала: %s; Дата окончания: %s}",
                 taskName,
                 taskDescription,

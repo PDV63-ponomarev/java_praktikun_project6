@@ -119,6 +119,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
             }
         }
+        manager.getTasks().forEach(manager::addToPrioritized);      // или напрямую
+        manager.getEpics().forEach(manager::addToPrioritized);
+        manager.getSubtasks().forEach(manager::addToPrioritized);
         return manager;
     }
 }

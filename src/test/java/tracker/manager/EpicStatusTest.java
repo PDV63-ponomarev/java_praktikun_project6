@@ -44,7 +44,6 @@ public class EpicStatusTest {
         TaskSubtask subtask2 = new TaskSubtask("S2", "d", DONE, epic.getTaskID(), SUBTASK,
                 60, null);
 
-
         subtask1.setTaskID(1);
         subtask2.setTaskID(2);
 
