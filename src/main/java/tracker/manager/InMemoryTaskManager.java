@@ -55,11 +55,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int addNewTask(Task task) {
+        Task overlap = findOverlap(task, -1);
+        if (overlap != null) {
+            throw new IllegalArgumentException(
+                    "Задача пересекается по времени с задачей ID " + overlap.getTaskID());
+        }
+
         task.setTaskID(nextId++);
-        tasks.put(task.getTaskID(), task);
-
         prioritizedTasks.add(task);
-
         return task.getTaskID();
     }
 
@@ -75,6 +78,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int addNewSubtask(TaskSubtask subtask) {
+
+        Task overlap = findOverlap(subtask, -1);
+        if (overlap != null) {
+            throw new IllegalArgumentException(
+                    "Подзадача пересекается по времени с задачей ID " + overlap.getTaskID());
+        }
+
         TaskEpic epic = epics.get(subtask.getEpicId());
         if (epic == null) {
             throw new IllegalArgumentException(
@@ -94,9 +104,16 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         if (tasks.containsKey(task.getTaskID())) {
+            Task overlap = findOverlap(task, task.getTaskID());
+            if (overlap != null) {
+                throw new IllegalArgumentException(
+                        "Обновление пересекается по времени с задачей ID " + overlap.getTaskID());
+            }
             removeFromPrioritized(task.getTaskID());
             tasks.put(task.getTaskID(), task);
             prioritizedTasks.add(task);
+        } else {
+            System.out.println("Нет такого ID");
         }
     }
 
@@ -112,6 +129,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(TaskSubtask subtask) {
         if (!subtasks.containsKey(subtask.getTaskID())) return;
+        Task overlap = findOverlap(subtask, subtask.getTaskID());
+        if (overlap != null) {
+            throw new IllegalArgumentException(
+                    "Обновление пересекается по времени с задачей ID " + overlap.getTaskID());
+        }
         removeFromPrioritized(subtask.getTaskID());
         subtasks.put(subtask.getTaskID(), subtask);
         updateEpicStatus(subtask.getEpicId());
@@ -207,4 +229,38 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(prioritizedTasks);
     }
 
+    private boolean isOverlapping(Task a, Task b) {
+        if (a.getStartTime() == null || b.getStartTime() == null) {
+            return false; // задачи без времени не участвуют в проверке
+        }
+        Date aStart = a.getStartTime();
+        Date aEnd   = a.getEndTime();
+        Date bStart = b.getStartTime();
+        Date bEnd   = b.getEndTime();
+        return aStart.before(bEnd) && bStart.before(aEnd);
+    }
+
+    /**
+     * Возвращает первую задачу из prioritizedTasks, с которой пересекается newTask,
+     * либо null, если пересечений нет.
+     * ignoreId — id задачи, которую исключаем из проверки (при обновлении это она сама).
+     */
+    private Task findOverlap(Task newTask, int ignoreId) {
+        if (newTask.getStartTime() == null) {
+            return null;
+        }
+
+        for (Task existing : prioritizedTasks) {
+            if (existing.getTaskType() == TaskType.EPIC) {
+                continue;
+            }
+            if (existing.getTaskID() == ignoreId) {
+                continue; // при редактировании не сравниваем задачу саму с собой
+            }
+            if (isOverlapping(newTask, existing)) {
+                return existing;
+            }
+        }
+        return null;
+    }
 }

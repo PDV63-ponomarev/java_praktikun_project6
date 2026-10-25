@@ -107,8 +107,12 @@ public class Main {
 
         switch (type) {
             case "1" -> {
-                int id = manager.addNewTask(new Task(name, desc, status, TaskType.TASK, duration, startTime));
-                System.out.println("Создана задача, ID: " + id);
+                try {
+                    int id = manager.addNewTask(new Task(name, desc, status, TaskType.TASK, duration, startTime));
+                    System.out.println("Создана задача, ID: " + id);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Ошибка: " + e.getMessage());
+                }
             }
             case "2" -> {
                 int id = manager.addNewEpic(new TaskEpic(name, desc, status, TaskType.EPIC, duration, startTime));
@@ -120,9 +124,13 @@ public class Main {
                 }
                 System.out.print("ID эпика: ");
                 int epicId = Integer.parseInt(scanner.nextLine().trim());
-                int id = manager.addNewSubtask(
-                        new TaskSubtask(name, desc, status, epicId ,TaskType.SUBTASK, duration, startTime));
-                System.out.println(id == -1 ? "Эпик не найден" : "Создана подзадача, ID: " + id);
+                try {
+                    int id = manager.addNewSubtask(
+                            new TaskSubtask(name, desc, status, epicId, TaskType.SUBTASK, duration, startTime));
+                    System.out.println(id == -1 ? "Эпик не найден" : "Создана подзадача, ID: " + id);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Ошибка: " + e.getMessage());
+                }
             }
         }
     }
@@ -188,8 +196,11 @@ public class Main {
                     return;
                 }
                 Date startTime = readStartTime();
-                if (task != null) { task.setStartTime(startTime); manager.updateTask(task); }
-                else { sub.setStartTime(startTime); manager.updateSubtask(sub); }
+                if (task != null) {
+                    task.setStartTime(startTime); manager.updateTask(task);
+                } else {
+                    sub.setStartTime(startTime); manager.updateSubtask(sub);
+                }
             }
             default -> System.out.println("Неверный пункт меню");
         }
