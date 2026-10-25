@@ -1,4 +1,5 @@
 package tracker.manager;
+import org.junit.jupiter.api.io.TempDir;
 import tracker.model.*;
 import static tracker.model.EnumStatus.*;
 import static tracker.model.TaskType.*;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -97,9 +99,10 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 }
 
 class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
+    @TempDir Path tempDir;
     @Override
     FileBackedTasksManager createManager() {
-        return new FileBackedTasksManager(new File("test.csv"));
+        return new FileBackedTasksManager(tempDir.resolve("tasks.csv").toFile());
     }
 
     @Test

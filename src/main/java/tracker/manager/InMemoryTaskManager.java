@@ -62,6 +62,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         task.setTaskID(nextId++);
+        tasks.put(task.getTaskID(), task);
         prioritizedTasks.add(task);
         return task.getTaskID();
     }
@@ -70,9 +71,7 @@ public class InMemoryTaskManager implements TaskManager {
     public int addNewEpic(TaskEpic epic) {
         epic.setTaskID(nextId++);
         epics.put(epic.getTaskID(), epic);
-
         prioritizedTasks.add(epic);
-
         return epic.getTaskID();
     }
 
@@ -95,9 +94,7 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.put(subtask.getTaskID(), subtask);
         epic.addSubtaskId(subtask.getTaskID());
         updateEpicStatus(epic.getTaskID());
-
         prioritizedTasks.add(subtask);
-
         return subtask.getTaskID();
     }
 
@@ -112,8 +109,6 @@ public class InMemoryTaskManager implements TaskManager {
             removeFromPrioritized(task.getTaskID());
             tasks.put(task.getTaskID(), task);
             prioritizedTasks.add(task);
-        } else {
-            System.out.println("Нет такого ID");
         }
     }
 
@@ -150,10 +145,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTask(int id) {
         tasks.remove(id);
-
-        Task t = getTask(id);
-        prioritizedTasks.remove(t);
-
+        removeFromPrioritized(id);
         historyManager.remove(id);
     }
 
@@ -165,8 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
             subtasks.remove(subId);
             historyManager.remove(subId);
         }
-        Task t = getTask(id);
-        prioritizedTasks.remove(t);
+        removeFromPrioritized(id);
         historyManager.remove(id);
     }
 
@@ -180,8 +171,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.removeSubtaskId(id);
             updateEpicStatus(epic.getTaskID());
         }
-        Task t = getTask(id);
-        prioritizedTasks.remove(t);
+        removeFromPrioritized(id);
         historyManager.remove(id);
     }
 
@@ -201,7 +191,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
             historyManager.remove(e.getTaskID());
         }
-        prioritizedTasks.removeIf(t -> t.getTaskType() == TaskType.EPIC);
+        prioritizedTasks.removeIf(t -> t.getTaskType() == TaskType.TASK);
         epics.clear();
     }
 

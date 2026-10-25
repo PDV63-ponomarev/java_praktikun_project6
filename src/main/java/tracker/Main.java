@@ -49,12 +49,6 @@ public class Main {
     }
 
     private static void printAllTasks() {
-//        if (manager.getTasks().isEmpty() && manager.getEpics().isEmpty() && manager.getSubtasks().isEmpty()){
-//            System.out.println("Список задач пуст");
-//        } else {
-//            for (Task t : manager.getTasks())     System.out.println(t);
-//            for (TaskEpic e : manager.getEpics()) System.out.println(e);
-//            for (TaskSubtask s : manager.getSubtasks()) System.out.println(s);
         List<Task> list = manager.getPrioritizedTasks();
         if (list.isEmpty()) {
             System.out.println("Список приоритетных задач пуст");
@@ -124,10 +118,10 @@ public class Main {
                 }
                 System.out.print("ID эпика: ");
                 int epicId = Integer.parseInt(scanner.nextLine().trim());
+
                 try {
                     int id = manager.addNewSubtask(
                             new TaskSubtask(name, desc, status, epicId, TaskType.SUBTASK, duration, startTime));
-                    System.out.println(id == -1 ? "Эпик не найден" : "Создана подзадача, ID: " + id);
                 } catch (IllegalArgumentException e) {
                     System.out.println("Ошибка: " + e.getMessage());
                 }

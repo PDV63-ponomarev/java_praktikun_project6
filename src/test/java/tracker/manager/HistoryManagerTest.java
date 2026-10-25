@@ -50,29 +50,28 @@ public class HistoryManagerTest{
     }
 
     @Test
-    void deleteTaskForHistory(){
-        historyManager.add(task1);
-
-        List<Task> history = historyManager.getHistory();
-        history.remove(0);
-
-        assertTrue(history.isEmpty(), "История должна быть пустой");
-
+    void removeShouldDeleteFromHeadMiddleAndTail() {
         historyManager.add(task1);
         historyManager.add(task2);
-
-        history = historyManager.getHistory();
-        history.remove(0);
-
-        assertEquals(task2, history.get(0), "Вторая задача должна встать на место первой");
-
-        historyManager.add(task1);
         historyManager.add(task3);
 
-        history = historyManager.getHistory();
-        history.remove(1);
+        historyManager.remove(task1.getTaskID());          // начало
+        assertEquals(List.of(task2, task3), historyManager.getHistory());
 
-        assertEquals(task3, history.get(1), "На место второй задачи должна встать третья");
+        historyManager.remove(task3.getTaskID());          // конец
+        assertEquals(List.of(task2), historyManager.getHistory());
+
+        historyManager.add(task1);
+        historyManager.add(task3);                          // снова 2,1,3... нет: 2,1,3
+        historyManager.remove(task1.getTaskID());          // середина
+        assertEquals(List.of(task2, task3), historyManager.getHistory());
+    }
+
+    @Test
+    void removeNonExistingIdShouldDoNothing() {
+        historyManager.add(task1);
+        historyManager.remove(999);
+        assertEquals(1, historyManager.getHistory().size());
     }
 }
 

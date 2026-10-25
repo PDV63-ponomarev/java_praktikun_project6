@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager{
-    private List<Task> history = new LinkedList<>();
 
     // Класс узла двусвязного списка
     private static class Node {
@@ -86,7 +85,6 @@ public class InMemoryHistoryManager implements HistoryManager{
         // Добавляем в конец и запоминаем узел в мапе
         Node newNode = linkLast(task);
         nodeMap.put(id, newNode);
-        history.add(task);
 
     }
 

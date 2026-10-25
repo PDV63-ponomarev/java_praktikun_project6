@@ -1,4 +1,0 @@
-id,type,name,status,description,epic
-2,EPIC,эпик,IN_PROGRESS,по,,10,1792918800000
-3,SUBTASK,под,IN_PROGRESS,оп,2,10,1792918800000
-
