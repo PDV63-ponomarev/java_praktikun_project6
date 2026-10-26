@@ -191,7 +191,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
             historyManager.remove(e.getTaskID());
         }
-        prioritizedTasks.removeIf(t -> t.getTaskType() == TaskType.TASK);
+        prioritizedTasks.removeIf(t -> t.getTaskType() != TaskType.TASK);
         epics.clear();
     }
 

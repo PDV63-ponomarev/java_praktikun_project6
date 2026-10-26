@@ -122,6 +122,7 @@ public class Main {
                 try {
                     int id = manager.addNewSubtask(
                             new TaskSubtask(name, desc, status, epicId, TaskType.SUBTASK, duration, startTime));
+                    System.out.println("Создана подзадача, ID: " + id);
                 } catch (IllegalArgumentException e) {
                     System.out.println("Ошибка: " + e.getMessage());
                 }

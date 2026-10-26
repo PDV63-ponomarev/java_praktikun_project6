@@ -124,4 +124,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         manager.getSubtasks().forEach(manager::addToPrioritized);
         return manager;
     }
+
+    @Override
+    public Task getTask(int id) {
+        Task task = super.getTask(id);
+        if (task != null) save();   // просмотр записался в историю — сохраняем
+        return task;
+    }
+
+    @Override
+    public TaskEpic getEpic(int id) {
+        TaskEpic epic = super.getEpic(id);
+        if (epic != null) save();
+        return epic;
+    }
+
+    @Override
+    public TaskSubtask getSubtask(int id) {
+        TaskSubtask sub = super.getSubtask(id);
+        if (sub != null) save();
+        return sub;
+    }
 }
